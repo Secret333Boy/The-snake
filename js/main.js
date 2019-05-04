@@ -1,9 +1,3 @@
-
-$(document).ready(function() {
-	init();
-	startGame();
-});
-
 const field = new_div('field');
 
 const snake = new_div('snake');
@@ -30,7 +24,7 @@ function init() {
 	drawSnake(true/*it is start*/);
 }
 
-function getPxInt (str) {
+function getPxInt(str) {
 	return +str.replace("px", "");
 }
 
@@ -68,11 +62,23 @@ function startGame() {
 	heading.textContent = "Press enter when you want to start";
 	field.appendChild(heading);
 
+	let span = document.createElement("span");
+	span.textContent = "Borders will kill snake";
+	let option = document.createElement("input");
+	option.setAttribute("type", "checkbox");
+	field.appendChild(span);
+	field.appendChild(option);
+
 	window.addEventListener("keydown", run);
 
 	function run(e) {
 		if (e.keyCode === 13) {
 			heading.remove();
+
+			borderKills = option.checked;
+
+			span.remove();
+			option.remove();
 
 			snake.direction = "top";
 			window.removeEventListener("keydown", run);
@@ -145,7 +151,9 @@ function startGame() {
 			}
 
 			currKey = snake.direction;
-			window.addEventListener("keydown", changeDirection);
+			setTimeout(() => {
+				window.addEventListener("keydown", changeDirection);
+			}, 1000/fps)
 		}
 	}
 
@@ -154,19 +162,43 @@ function startGame() {
 		let head_y = getPxInt(head.style.left);
 
 		if (head_x < h / -2) {
-			head.style.top = `${h / 2 - size}px`;
+			if (!borderKills) {
+				head.style.top = `${h / 2 - size}px`;
+			} else{
+				clearInterval(interval);
+				console.log('Game over');
+				endGame();
+			}
 		}
 
 		if (head_y < w / -2) {
-			head.style.left = `${w / 2 - size}px`;
+			if (!borderKills) {
+				head.style.left = `${w / 2 - size}px`;
+			} else{
+				clearInterval(interval);
+				console.log('Game over');
+				endGame();
+			}
 		}
 
 		if (head_x > h / 2 - size) {
-			head.style.top = `${h / 2 * (-1)}px`;
+			if (!borderKills) {
+				head.style.top = `${h / 2 * (-1)}px`;
+			} else{
+				clearInterval(interval);
+				console.log('Game over');
+				endGame();
+			}
 		}
 
 		if (head_y > w / 2 - size) {
-			head.style.left = `${w / 2 * (-1)}px`;
+			if (!borderKills) {
+				head.style.left = `${w / 2 * (-1)}px`;
+			} else{
+				clearInterval(interval);
+				console.log('Game over');
+				endGame();
+			}
 		}
 	}
 
@@ -247,3 +279,6 @@ function drawSnake(start) {
 		prev.push({x: el_x, y: el_y});
 	}
 }
+
+init();
+startGame();
