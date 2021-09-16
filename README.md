@@ -1,2 +1,2 @@
 # The-snake
-the-snake.vercel.app
+https://the-snake.vercel.app
